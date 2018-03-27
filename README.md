@@ -1,5 +1,3 @@
-# THIS PROJECT IS NO LONGER MAINTAINED
-**If you use this you're on your own. Fault tree generation from AADL models has been integrated into the OSATE implementation of the AADL Error Annex. OSATE does not support creation of fault trees without an underlying AADL model.**
 
 # EMFTA
 (An FTA editor/visualizer that uses EMF)
