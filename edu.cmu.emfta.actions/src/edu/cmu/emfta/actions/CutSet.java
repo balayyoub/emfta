@@ -21,6 +21,7 @@ package edu.cmu.emfta.actions;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.AreaReference;
@@ -249,7 +250,7 @@ public class CutSet {
 			}
 
 			default: {
-				System.out.println("[CutSetAction] default choice not implemented");
+				System.err.println("[CutSetAction] default choice not implemented for the generation of the set");
 				break;
 			}
 			}
@@ -260,7 +261,18 @@ public class CutSet {
 
 		}
 
-		return result;
+		//return result;
+		
+		List<List<Event>> resultnew = new ArrayList<List<Event>>();
+		for(List<Event> list : result) {
+			List<Event> listnew = list.stream().distinct().collect(Collectors.toList());
+			if(! resultnew.contains(listnew)) {
+				resultnew.add(listnew);
+			}
+		}
+
+		return resultnew;
+		
 	}
 
 	public XSSFWorkbook toWorkbook() {
