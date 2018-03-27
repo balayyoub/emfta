@@ -140,7 +140,10 @@ public class CutsetAction extends AbstractExternalJavaAction {
 		CutSet cs = new CutSet(event);
 		cs.process();
 
-		fileName = ResourceUtil.getFile(event.eResource()).getName();
+		fileName = event.getName();
+		if(fileName == null || fileName.trim().length() < 1) {
+			fileName = ResourceUtil.getFile(event.eResource()).getName();
+		}
 		fileName = fileName.replace(".emfta", "") + "-cutset.xlsx";
 //		System.out.println("filename=" + fileName);
 
