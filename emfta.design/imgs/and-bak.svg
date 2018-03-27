@@ -14,11 +14,8 @@
    viewBox="0 0 106 94.749996"
    id="svg2"
    version="1.1"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="and-custom.svg"
-   inkscape:export-filename="C:\UsersFiles\basharalshboul.MSWIN\software\papyrus-neon-2.0.0-win64-ws-ECS\master-EMFTA\emfta.design\imgs\and-custom.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="and.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -29,16 +26,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="39.506572"
+     inkscape:cx="92.899429"
      inkscape:cy="45.045342"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="944"
-     inkscape:window-height="1002"
+     inkscape:window-width="1366"
+     inkscape:window-height="747"
      inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
+     inkscape:window-y="21"
+     inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
@@ -67,12 +64,10 @@
      id="layer1"
      transform="translate(461.125,-187.4872)">
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.98488551px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m -460.625,278.92468 c 0,-121.24997 105,-121.24997 105,0 z"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m -460.625,281.7372 c 0,-125 105,-125 105,0 z"
        id="path3338"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccc"
-       inkscape:export-xdpi="90.076012"
-       inkscape:export-ydpi="90.076012" />
+       sodipodi:nodetypes="ccc" />
   </g>
 </svg>
