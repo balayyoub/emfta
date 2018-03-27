@@ -9,6 +9,8 @@ Bundle-Vendor: Software Engineering Institute
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.eclipse.emf.edit.ui,
+ org.eclipse.xtext.ui,
  org.osate.aadl2.modelsupport;bundle-version="1.0.0",
  org.osate.aadl2;bundle-version="1.0.0",
  org.osate.ui;bundle-version="1.0.0",
