@@ -290,26 +290,27 @@ public class CutSet {
 		double cutsetProbability;
 
 		XSSFSheet sheet = workbook.createSheet();
-
-		XSSFTable table = sheet.createTable();
-		table.setDisplayName("Cutsets");
-		CTTable cttable = table.getCTTable();
-
-		// Set which area the table should be placed in
-		AreaReference reference = new AreaReference(new CellReference(0, 0), new CellReference(2, 2));
-		cttable.setRef(reference.formatAsString());
-		cttable.setId((long) 1);
-		cttable.setName("Cutsets");
-		cttable.setTotalsRowCount((long) 1);
-
-		CTTableColumns columns = cttable.addNewTableColumns();
-		columns.setCount((long) 3);
-		CTTableColumn column;
 		XSSFRow row;
 		XSSFCell cell;
-
-		column = columns.addNewTableColumn();
-
+		/* // Have been commented as not required and causes an issue when open with MS Excel.
+		 * 
+			XSSFTable table = sheet.createTable();
+			table.setDisplayName("Cutsets");
+			CTTable cttable = table.getCTTable();
+	
+			// Set which area the table should be placed in
+			AreaReference reference = new AreaReference(new CellReference(0, 0), new CellReference(2, 2));
+			cttable.setRef(reference.formatAsString());
+			cttable.setId((long) 1);
+			cttable.setName("Cutsets");
+			cttable.setTotalsRowCount((long) 1);
+	
+			CTTableColumns columns = cttable.addNewTableColumns();
+			columns.setCount((long) 3);
+			CTTableColumn column;
+	
+			column = columns.addNewTableColumn();
+		 */
 		// Create row
 		row = sheet.createRow(0);
 		CellStyle headingCellStyle = workbook.createCellStyle();
