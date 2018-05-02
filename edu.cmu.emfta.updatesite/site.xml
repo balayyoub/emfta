@@ -3,6 +3,5 @@
    <description name="EMFTA Update site" url="http://aadl.info/aadl/emfta/updates">
       EMFTA Update site - latest build
    </description>
-   <feature url="features/edu.cmu.emfta.feature_1.0.0.201604071513.jar" id="edu.cmu.emfta.feature" version="1.0.0.201604071513"/>
-   <feature url="features/org.osate.aadl2.errormodel.emfta.feature_1.0.0.201604071513.jar" id="org.osate.aadl2.errormodel.emfta.feature" version="1.0.0.201604071513"/>
+   <feature url="features/edu.cmu.emfta.feature_1.0.0.201804212314.jar" id="edu.cmu.emfta.feature" version="1.0.0.201804212314"/>
 </site>
