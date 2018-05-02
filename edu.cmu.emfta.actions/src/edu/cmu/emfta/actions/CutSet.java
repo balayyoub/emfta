@@ -19,6 +19,7 @@
 package edu.cmu.emfta.actions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +36,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTable;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumn;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumns;
+
+import com.bpodgursky.jbool_expressions.And;
+import com.bpodgursky.jbool_expressions.Expression;
+import com.bpodgursky.jbool_expressions.NExpression;
+import com.bpodgursky.jbool_expressions.Or;
+import com.bpodgursky.jbool_expressions.Variable;
+import com.bpodgursky.jbool_expressions.rules.RuleSet;
 
 import edu.cmu.emfta.Event;
 import edu.cmu.emfta.Gate;
@@ -136,9 +144,10 @@ public class CutSet {
 	 * of the FTA (generate everything)
 	 */
 	public void process() {
-//		System.out.println("[CutSet] processing");
-		List<List<Event>> allEvents = processEvent(topEvent);
-//		System.out.println("[CutSet] cutset size = " + allEvents.size());
+		logMessage("[CutSet] processing");
+		List<List<Event>> allEvents = processEventUsingJBool(topEvent);
+//		List<List<Event>> allEvents = processEvent(topEvent);
+		logMessage("[CutSet] cutset size = " + allEvents.size());
 		int n = 0;
 		for (List<Event> l : allEvents) {
 			System.out.print("[CutSet] " + n + ":");
@@ -273,6 +282,70 @@ public class CutSet {
 
 		return resultnew;
 		
+	}
+
+	/**
+	 * @param event the event to generate the cut set for
+	 * 
+	 */
+	private List<List<Event>> processEventUsingJBool(Event event) {
+		Expression<Event> processBoolExpr = processBoolExpr(event);
+		logMessage("Topevent: " + processBoolExpr);
+		Expression<Event> simplifiedExpr = RuleSet.simplify(processBoolExpr);
+		logMessage( "simplified:1: " + simplifiedExpr);
+		Expression<Event> dnf = RuleSet.toDNF(processBoolExpr);
+		logMessage( "DNF       :3: " + dnf);
+		
+		List<List<Event>> result = new ArrayList<List<Event>>();
+		for(Expression<Event> child: ((NExpression<Event>)dnf).expressions){
+			result.add((new ArrayList<Event>(child.getAllK())));
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @param event
+	 * @return
+	 */
+	public Expression<Event> processBoolExpr(Event event) {
+		Expression<Event> result = Variable.of(event);
+		logMessage("result: " + result);
+		if (event.getGate() != null) {
+			Gate gate = event.getGate();
+			List<Expression<Event>> interSet = new ArrayList<Expression<Event>>();
+			for (Event e : gate.getEvents()) {
+				interSet.add(processBoolExpr(e));
+				logMessage("interSet: " + interSet);
+			}
+			switch (gate.getType()) {
+			case AND: {
+				Expression<Event> interExpr = And.of(interSet);
+				logMessage("interExpr: " + interExpr);
+				result = result.replaceVars(Collections.singletonMap(event, interExpr));
+				logMessage("result: " + result);
+				break;
+			}
+
+			case OR: {
+				Expression<Event> interExpr = Or.of(interSet);
+				logMessage("interExpr: " + interExpr);
+				result = result.replaceVars(Collections.singletonMap(event, interExpr));
+				logMessage("result: " + result);
+				break;
+			}
+
+			default: {
+				System.err.println("[CutSetAction] default choice not implemented for the generation of the set");
+				break;
+			}
+			}
+		}
+		return result;
+	}
+
+	private void logMessage(String msg) {
+		System.out.println(this.getClass().getName() + ": " + msg);
 	}
 
 	public XSSFWorkbook toWorkbook() {
