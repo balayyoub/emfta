@@ -4,7 +4,8 @@
                              Julien Delange <jdelange@andrew.cmu.edu>
 
 ##In a Nutshell
-* Latest build : https://raw.githubusercontent.com/cmu-sei/emfta/master/edu.cmu.emfta.updatesite/
+* Latest build : https://raw.githubusercontent.com/balayyoub/emfta/develop/edu.cmu.emfta.updatesite/
+* The latest have been tested on Neon and Oxygen Eclipse.
 * Mars update site: https://raw.githubusercontent.com/cmu-sei/emfta/mars/edu.cmu.emfta.updatesite/
 * Luna update site: https://raw.githubusercontent.com/cmu-sei/emfta/luna/edu.cmu.emfta.updatesite/
 
