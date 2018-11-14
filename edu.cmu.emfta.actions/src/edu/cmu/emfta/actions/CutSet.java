@@ -40,6 +40,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumns;
 import com.bpodgursky.jbool_expressions.And;
 import com.bpodgursky.jbool_expressions.Expression;
 import com.bpodgursky.jbool_expressions.NExpression;
+import com.bpodgursky.jbool_expressions.Not;
 import com.bpodgursky.jbool_expressions.Or;
 import com.bpodgursky.jbool_expressions.Variable;
 import com.bpodgursky.jbool_expressions.rules.RuleSet;
@@ -295,10 +296,29 @@ public class CutSet {
 		logMessage( "simplified:1: " + simplifiedExpr);
 		Expression<Event> dnf = RuleSet.toDNF(processBoolExpr);
 		logMessage( "DNF       :3: " + dnf);
+		EventComparator eventComparator = new EventComparator();
 		
 		List<List<Event>> result = new ArrayList<List<Event>>();
 		for(Expression<Event> child: ((NExpression<Event>)dnf).expressions){
-			result.add((new ArrayList<Event>(child.getAllK())));
+			List<Event> tempo = new ArrayList<Event>();
+			if (child instanceof NExpression) {
+				NExpression<Event> nexpr = (NExpression<Event>) child;
+				for (Expression<Event> x : nexpr.expressions) {
+					if (x instanceof Variable) {
+						Variable<Event> var = (Variable<Event>) x;
+						tempo.add(var.getValue());
+					} else if (x instanceof Not) {
+						continue;
+					}
+				}
+			} else if (child instanceof Variable) {
+				tempo.add(((Variable<Event>) child).getValue());
+			}
+
+			tempo.sort(eventComparator);
+			if (!result.contains(tempo)) {
+				result.add(tempo);
+			}
 		}
 		
 		return result;
@@ -332,6 +352,18 @@ public class CutSet {
 				logMessage("interExpr: " + interExpr);
 				result = result.replaceVars(Collections.singletonMap(event, interExpr));
 				logMessage("result: " + result);
+				break;
+			}
+
+			case XOR: {
+				if (interSet.size() != 2) {
+					System.err.println("[CutSetAction] XOR gate can only have 2 arrguments");
+					break;
+				}
+				Expression<Event> a = interSet.get(0);
+				Expression<Event> b = interSet.get(1);
+				Expression<Event> interExpr = Or.of(And.of(a, Not.of(b)), And.of(Not.of(a), b));
+				result = result.replaceVars(Collections.singletonMap(event, interExpr));
 				break;
 			}
 
