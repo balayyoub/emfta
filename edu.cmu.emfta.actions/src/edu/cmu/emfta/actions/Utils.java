@@ -19,6 +19,9 @@
 package edu.cmu.emfta.actions;
 
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -29,8 +32,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.xtext.ui.util.ResourceUtil;
 
 import edu.cmu.emfta.Event;
@@ -198,58 +205,90 @@ public class Utils {
 	public static double getSubeventProbabilities(Event event) {
 		Gate gate = event.getGate();
 		double result;
+		BigDecimal bdResult = null;
 
 		if (gate != null) {
+			List<Event> listofValidProbabilityEvents = getListofValidProbabilityEvents(gate.getEvents());
 			switch (gate.getType()) {
 			case AND: {
-				result = 1;
-				for (Event subEvent : gate.getEvents()) {
-					result = result * subEvent.getProbability();
+				bdResult = BigDecimal.valueOf(1);
+				for (Event subEvent : listofValidProbabilityEvents) {
+					BigDecimal prob = BigDecimal.valueOf(subEvent.getProbability());
+					bdResult = bdResult.multiply(prob);
 				}
 				break;
 			}
 			case PRIORITY_AND: {
 				// TODO need to adjust for ordered events
-				result = 1;
-				for (Event subEvent : gate.getEvents()) {
-					result = result * subEvent.getProbability();
+				bdResult = BigDecimal.valueOf(1);
+				for (Event subEvent : listofValidProbabilityEvents) {
+					BigDecimal prob = BigDecimal.valueOf(subEvent.getProbability());
+					bdResult = bdResult.multiply(prob);
 				}
 				break;
 			}
 			case XOR: {
-				double inverseProb = 1;
-				for (Event subEvent : gate.getEvents()) {
-					inverseProb *= (1 - subEvent.getProbability());
+				BigDecimal bdInverseProb = BigDecimal.valueOf(1);
+				BigDecimal bdOne = BigDecimal.valueOf(1);
+				for (Event subEvent : listofValidProbabilityEvents) {
+					BigDecimal prob = BigDecimal.valueOf(subEvent.getProbability());
+					bdInverseProb = bdInverseProb.multiply(bdOne.subtract(prob));
 				}
-				result = 1 - inverseProb;
+				bdResult = bdOne.subtract(bdInverseProb);
 				break;
 			}
 			case OR: {
-				result = 0;
-				for (Event subEvent : gate.getEvents()) {
-					result = result + subEvent.getProbability();
+				bdResult = BigDecimal.valueOf(0);
+				for (Event subEvent : listofValidProbabilityEvents) {
+					BigDecimal prob = BigDecimal.valueOf(subEvent.getProbability());
+					bdResult = bdResult.add(prob);
 				}
 				break;
 			}
 			case INTERMEDIATE: {
-				result = 0;
-				for (Event subEvent : gate.getEvents()) {
-					result = result + subEvent.getProbability();
+				bdResult = BigDecimal.valueOf(0);
+				for (Event subEvent : listofValidProbabilityEvents) {
+					BigDecimal prob = BigDecimal.valueOf(subEvent.getProbability());
+					bdResult = bdResult.add(prob);
 				}
 				break;
 			}
 			default: {
-				System.out.println("[Utils] Unsupported for now");
+				System.out.println("[Utils] Unsupported gate type: " + gate.getType());
+				MessageBox dialog = new MessageBox(Display.getDefault().getActiveShell(), SWT.ERROR | SWT.ICON_ERROR);
+				dialog.setText("Error");
+				dialog.setMessage("[Utils] Unsupported gate type: " + gate.getType());
+				dialog.open();
 				result = -1;
 				break;
 			}
 			}
-			System.out.println("[Utils] Probability for " + event.getName() + ":" + result);
-
+			System.out.println("[Utils] Probability for " + event.getName() + ":" + bdResult.toString());
+			result = bdResult.doubleValue();
 		} else {
 			result = event.getProbability();
 		}
 		return result;
+	}
+
+	/**
+	 * @param eList
+	 */
+	private static List<Event> getListofValidProbabilityEvents(EList<Event> eList) {
+		List<Event> list = new ArrayList<Event>();
+		for (Event subEvent : eList) {
+			if(subEvent.getProbability() >= 1 || subEvent.getProbability() <= 0) {
+//				MessageBox dialog = new MessageBox(Display.getDefault().getActiveShell(), SWT.ERROR | SWT.ICON_ERROR);
+//				dialog.setText("Error");
+//				dialog.setMessage("Invalid event probability, by pass, name: " + subEvent.getName() + ", probability: " + subEvent.getProbability());
+//				dialog.open();
+				System.out.println("[Utils] Invalid event probability, by pass, name: " + subEvent.getName() + ", probability: " + subEvent.getProbability());
+				continue;
+			}
+			
+			list.add(subEvent);
+		}
+		return list;
 	}
 
 	/**
