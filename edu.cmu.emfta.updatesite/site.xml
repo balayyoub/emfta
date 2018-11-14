@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="EMFTA Update site" url="http://aadl.info/aadl/emfta/updates">
-      EMFTA Update site - latest build
-   </description>
-   <feature url="features/edu.cmu.emfta.feature_1.0.0.201804212314.jar" id="edu.cmu.emfta.feature" version="1.0.0.201804212314"/>
+   <feature url="features/edu.cmu.emfta.feature_1.0.0.201811062141.jar" id="edu.cmu.emfta.feature" version="1.0.0.201811062141">
+      <category name="EMFTA"/>
+   </feature>
+   <category-def name="EMFTA" label="EMFTA"/>
 </site>
